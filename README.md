@@ -24,11 +24,17 @@ As data we collect the distance between where the user ends and the actual targe
     - show screen again
 
 ## Todo
-- Create code
+- Create code -- Jord
     - data export als csv
-- Verwerk data uit csv
+        - time
+        - x-coordinate mouse click
+        - target coords
+        - vaste variabele
+            - target width
+            - distance between start and target
+            - time to block screen
+- Verwerk data uit csv -- Teun
 - Do experiment
-
 - Make Report
 - Make presentation
  
