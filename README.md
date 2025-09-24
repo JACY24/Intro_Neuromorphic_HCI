@@ -1,7 +1,7 @@
-# Intro_Neuromorphic_HCI
+# Intro Neuromorphic HCI
 project for the course Introduction to Neuromorphic Human Computer Interaction.
 
-# Project idea
+## Project idea
 
 We want to conduct the following experiment: participants get a screen with a mouse, and a target shown on the screen. The goal is to move the cursor from a starting position, to the target. Once a participant starts moving the mouse, they get 'blinded' (i.e. the screen is blacked out). Once they think they have reached the target, they get to see where they actually ended up. By repeating this experiment multiple times with the same start and target positions, we predict participants get closer and closer to the goal.
 
@@ -12,5 +12,6 @@ From the experiment point of view, you could thus argue that the correct movemen
 As data we collect the distance between where the user ends and the actual target, and movement time. 
 
 
-
- 
+## Running the code
+1. First make sure to install poetry following [the guide on their website](https://python-poetry.org/docs/).
+2. 
