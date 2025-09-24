@@ -1,0 +1,17 @@
+[project]
+name = "Intro_Neuromorphic_HCI"
+version = "0.1.0"
+description = "Project for the course Introduction to Neuromorphic Human Computer Interaction"
+authors = [
+    {name = "Jord",email = "jordcluitmans@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pygame (>=2.6.1,<3.0.0)",
+    "numpy (>=2.3.3,<3.0.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
