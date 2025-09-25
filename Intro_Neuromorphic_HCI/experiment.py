@@ -9,14 +9,16 @@ class Experiment:
         self.width = None
         self.scores = np.array([])
         self.times = np.array([])
+        self.trials = None
 
-        while type(self.dist) is not int or type(self.width) is not int:
+        while type(self.dist) is not int or type(self.width) is not int or type(self.trials) is not int:
             try:
-                self.dist, self.width = input("Enter distance and width (e.g., '200 50'): ").split()
-                self.dist = int(self.dist)
-                self.width = int(self.width)
+                dist, width, trials = input("Enter distance, width and amount of trials (e.g., '200 50 20'): ").split()
+                self.dist = int(dist)
+                self.width = int(width)
+                self.trials = int(trials)
             except ValueError:
-                print("Please enter valid integers for distance and width.")
+                print("Please enter valid integers for distance, width and trials")
     
     def add_score(self, score: float, time: float):
         self.times = np.append(self.times, time)

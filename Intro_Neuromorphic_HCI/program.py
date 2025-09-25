@@ -28,7 +28,7 @@ class Program:
     def game_loop(self):
         ''' Main game loop '''
 
-        while self.running:   
+        while self.running and (self.experiment.trials is None or self.experiment.scores.size < self.experiment.trials):   
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -41,6 +41,7 @@ class Program:
             pygame.display.update()
             self.fps_clock.tick(self.fps)
 
+        time.sleep(1)
         pygame.quit()
         self.experiment.save_results()
         self.experiment.print_results()
