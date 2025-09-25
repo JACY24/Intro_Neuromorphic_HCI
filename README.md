@@ -29,6 +29,3 @@ Once the code is running, it will prompt to input some initial values:
 Once these values are provided, the program starts, showing the target on the screen. 
 When a user clicks the left mouse button, the cursor will be teleported to the _start-position_. After `visibility time` seconds, all visible queues disappear, and the user can start moving the (invisible) cursor to the target. Once a user clicks again, the target, cursor and click-positions are shown again. When a user clicks again, the second trial will start.
 This will continue until `trials` amount of trials have been completed. Afterwards, results are printed in the terminal, as well as saved to a `.csv` file in the `results/` directory.
-
-## Results shape
-The `.csv` file has the following shape: `Distance, Width,Visible time, Distance, Time`
