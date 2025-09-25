@@ -51,7 +51,7 @@ class Program:
         pygame.mouse.set_pos((50, self.screen.get_height() // 2))
         time.sleep(0.5)
         pygame.mouse.set_visible(False)
-        pygame.draw.rect(self.screen, (255, 255, 255), self.target)
+        pygame.draw.rect(self.screen, (255, 255, 255), (0, 0, self.screen.get_width(), self.screen.get_height()))
 
     def end_experiment(self, pos: int):
         self.exp_running = False
