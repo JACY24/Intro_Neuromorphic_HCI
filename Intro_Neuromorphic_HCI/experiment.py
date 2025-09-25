@@ -31,7 +31,7 @@ class Experiment:
         print(f"Saving results to {results}")
         with open (results, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Distance", "Width", "Visible time", "Score", "Time"])
+            writer.writerow(["Distance", "Width", "Visible time", "Distance", "Time"])
             for score, time in zip(self.scores, self.times):
                 writer.writerow([self.dist, self.width, self.visibility_time, score, time])
         
@@ -51,8 +51,8 @@ class Experiment:
         print(f"Distance: {self.dist}, Width: {self.width}, Trials: {self.trials}, Visibility Time: {self.visibility_time}")
         print(f"Mean Dist: {mean_score:.2f}")
         print(f"Dist Standard Deviation: {std_dev:.2f}")
-        print(f"Dist Min Score: {min_score:.2f}")
-        print(f"Dist Max Score: {max_score:.2f}")
+        print(f"Dist Min Dist: {min_score:.2f}")
+        print(f"Dist Max Dist: {max_score:.2f}")
         print("-------------------")
         print(f"Mean Time: {np.mean(self.times):.2f}")
         print(f"Time Standard Deviation: {np.std(self.times):.2f}")
