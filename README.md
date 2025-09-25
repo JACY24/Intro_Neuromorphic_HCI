@@ -1,5 +1,5 @@
 # Intro Neuromorphic HCI
-project for the course Introduction to Neuromorphic Human Computer Interaction.
+Project for the course Introduction to Neuromorphic Human Computer Interaction.
 
 ## Project idea
 
