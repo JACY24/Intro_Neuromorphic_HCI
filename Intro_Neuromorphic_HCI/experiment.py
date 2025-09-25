@@ -1,5 +1,6 @@
 import numpy as np
 import datetime
+import csv
 
 class Experiment:
     def __init__(self):
@@ -22,6 +23,11 @@ class Experiment:
 
     def save_results(self, filename: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}.csv"):
         print(f"Saving results to {filename}")
+        with open (filename, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Distance", "Width", "Score", "Time"])
+            for score, time in zip(self.scores, self.times):
+                writer.writerow([self.dist, self.width, score, time])
         
 
     def print_results(self):
