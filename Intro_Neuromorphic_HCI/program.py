@@ -50,7 +50,7 @@ class Program:
         self.exp_running = True
         self.exp_start_time = time.time()
         pygame.mouse.set_pos((50, self.screen.get_height() // 2))
-        time.sleep(0.5)
+        time.sleep(self.experiment.visibility_time)
         pygame.mouse.set_visible(False)
         pygame.draw.rect(self.screen, (255, 255, 255), (0, 0, self.screen.get_width(), self.screen.get_height()))
 
