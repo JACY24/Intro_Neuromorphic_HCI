@@ -28,3 +28,5 @@
 - Crosshair ipv mouse pinter (center over where you click)
 - Trials twee kanten op
 - reset knop
+- A een macht 2 groter dan W (dan is ID een mooi getal)
+- Bij results bijvoegen welke kant het experiment opgaat (direction in csv)

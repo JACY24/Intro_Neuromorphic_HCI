@@ -1,6 +1,10 @@
 # Intro Neuromorphic HCI
 Project for the course Introduction to Neuromorphic Human Computer Interaction.
 
+Research Question: Does Fitts' Law hold in this case _[later beter verworden]_?
+
+Research Question: Which model fits this case _[later beter verworden]_, Fitt's Law or square-root model?
+
 ## Project idea
 
 We want to conduct the following experiment: participants get a screen with a mouse, and a target shown on the screen. The goal is to move the cursor from a starting position, to the target. Once a participant starts moving the mouse, they get 'blinded' (i.e. the screen is blacked out). Once they think they have reached the target, they get to see where they actually ended up. By repeating this experiment multiple times with the same start and target positions, we predict participants get closer and closer to the goal.
