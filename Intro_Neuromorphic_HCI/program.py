@@ -19,7 +19,7 @@ class Program:
         pygame.display.set_icon(self.icon)
         pygame.display.set_caption(title)
 
-        self.target = (self.experiment.dist, 20, self.experiment.width, self.screen.get_height() - 40)
+        self.target = (self.experiment.amp, 20, self.experiment.width, self.screen.get_height() - 40)
         pygame.draw.rect(self.screen, (230, 34, 114), self.target)
         
         self.running = True
@@ -28,7 +28,7 @@ class Program:
     def game_loop(self):
         ''' Main game loop '''
 
-        while self.running and (self.experiment.trials is None or self.experiment.scores.size < self.experiment.trials):   
+        while self.running and (self.experiment.trials is None or self.experiment.dist_to_target.size < self.experiment.trials):   
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -59,15 +59,16 @@ class Program:
         end_time = time.time() 
         pygame.mouse.set_visible(True)
         
-        dist = self.target[0] + (self.experiment.width / 2) - pos[0]
+        dist = pos[0] - self.target[0] - (self.experiment.width / 2) 
         abs_dist = abs(dist)
-        self.experiment.add_score(abs_dist, end_time - self.exp_start_time)
+        self.experiment.add_score(dist, end_time - self.exp_start_time)
 
         
-        max_distance = max(self.experiment.dist, self.screen.get_width() - (self.experiment.dist + self.experiment.width))
+        max_distance = max(self.experiment.amp, self.screen.get_width() - (self.experiment.amp + self.experiment.width))
+        
         normalized_dist = min((abs_dist**0.3) / (max_distance**0.3), 1.0)
-
         color = (int(255 * normalized_dist), int(255 * (1 - normalized_dist)), 8)
+
         pygame.draw.rect(self.screen, (230, 34, 114), self.target)
         pygame.draw.circle(self.screen, color, pos, 10)
 

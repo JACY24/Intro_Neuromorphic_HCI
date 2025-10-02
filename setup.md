@@ -23,3 +23,8 @@
 - Do experiment
 - Make Report
 - Make presentation
+
+
+- Crosshair ipv mouse pinter (center over where you click)
+- Trials twee kanten op
+- reset knop
