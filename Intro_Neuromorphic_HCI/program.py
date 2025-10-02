@@ -1,12 +1,22 @@
 import pygame
 import experiment as exp
 import time
+from libpointing import PointingDevice, DisplayDevice, TransferFunction
+from cursor_data import CursorData
 
 class Program:
     def __init__(self, width=1200, height=800, fps=60, title="Blinded Fitts' Law Experiment", icon_path='../img/target.png'):
         self.experiment = exp.Experiment()
         self.exp_start_time = None
         self.exp_running = False
+
+        # Cursor
+        self.pdev = PointingDevice.create("any:?vendor=0x046D&product=0xC537")
+        self.ddev = DisplayDevice.create("any:")
+        self.tfct = TransferFunction(b"system:", self.pdev, self.ddev)
+        self.cursor_data = CursorData(100) # ms per aggregated time interval
+        self.pdev.setCallback(self.cb_fct)
+        self.can_move = False
 
         pygame.init()
 
@@ -45,12 +55,14 @@ class Program:
         pygame.quit()
         self.experiment.save_results()
         self.experiment.print_results()
+        self.cursor_data.write_to_csv(self.experiment.get_settings())
 
     def start_experiment(self):
         self.exp_running = True
         self.exp_start_time = time.time()
         pygame.mouse.set_pos((50, self.screen.get_height() // 2))
         time.sleep(self.experiment.visibility_time)
+        self.can_move = True
         pygame.mouse.set_visible(False)
         pygame.draw.rect(self.screen, (255, 255, 255), (0, 0, self.screen.get_width(), self.screen.get_height()))
 
@@ -62,6 +74,8 @@ class Program:
         dist = pos[0] - self.target[0] - (self.experiment.width / 2) 
         abs_dist = abs(dist)
         self.experiment.add_score(dist, end_time - self.exp_start_time)
+        self.can_move = False
+        self.cursor_data.aggregate_data()
 
         
         max_distance = max(self.experiment.amp, self.screen.get_width() - (self.experiment.amp + self.experiment.width))
@@ -72,6 +86,10 @@ class Program:
         pygame.draw.rect(self.screen, (230, 34, 114), self.target)
         pygame.draw.circle(self.screen, color, pos, 10)
 
+    def cb_fct(self, timestamp, dx, dy, button):
+        if self.can_move:
+            rx,ry=self.tfct.applyd(dx, dy, timestamp)
+            self.cursor_data.append_data(timestamp, dx, dy)
 
     def run(self):
         self.game_loop()

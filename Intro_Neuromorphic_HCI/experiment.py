@@ -26,7 +26,7 @@ class Experiment:
         self.times = np.append(self.times, time)
         self.dist_to_target = np.append(self.dist_to_target, score)
 
-    def save_results(self, filename: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}.csv"):
+    def save_results(self, filename: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.csv"):
         results = os.path.join(os.path.dirname(os.getcwd()), 'results', filename)
         print(f"Saving results to {results}")
         with open (results, mode='w', newline='') as file:
@@ -58,6 +58,12 @@ class Experiment:
         print(f"Time Standard Deviation: {np.std(self.times):.2f}")
         print(f"Time Min: {np.min(self.times):.2f}")
         print(f"Time Max: {np.max(self.times):.2f}")
+    
+    def get_settings(self):
+        return {"amp": self.amp, 
+                "width": self.width, 
+                "visibility_time": self.visibility_time
+                }
 
     def run(self):
         print("Experiment is running")
