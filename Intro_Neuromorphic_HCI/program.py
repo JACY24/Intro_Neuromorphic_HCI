@@ -29,7 +29,9 @@ class Program:
         # Cursor
         self.pdev = PointingDevice.create("any:?vendor=0x046D&product=0xC537")
         self.ddev = DisplayDevice.create("any:")
-        self.tfct = TransferFunction(b"system:", self.pdev, self.ddev)
+        self.tfct = TransferFunction(b"constant:?cdgain=4", self.pdev, self.ddev)
+        self.dp_x_res = self.ddev.getResolution()[0]/self.pdev.getResolution()
+        self.dp_y_res = self.ddev.getResolution()[1]/self.pdev.getResolution()
         self.cursor_data = CursorData(100) # ms per aggregated time interval
         self.pdev.setCallback(self.cb_fct)
         self.record_cursor_data = False
@@ -59,7 +61,7 @@ class Program:
                     if event.button == 1 and not self.exp_running:  # Left mouse button
                         self.start_experiment()
                     elif event.button == 1 and self.exp_running:
-                        self.end_experiment(event.pos)    
+                        self.end_experiment(event.pos)
             self.draw_screen()
             pygame.display.update()
             pygame.mouse.set_pos((self.x , self.y))
@@ -117,8 +119,10 @@ class Program:
 
     def cb_fct(self, timestamp, dx, dy, button):
         rx,ry=self.tfct.applyd(dx, dy, timestamp)
-        self.x = max(min(self.x + dx, self.screen_width), 0) # Should be ry after transformation function is not empty
-        self.y = max(min(self.y + dy, self.screen_height), 0) # ^
+        rx *= self.dp_x_res 
+        ry *= self.dp_y_res
+        self.x = max(min(self.x + rx, self.screen_width), 0)
+        self.y = max(min(self.y + ry, self.screen_height), 0)
         if self.record_cursor_data:
             self.cursor_data.append_data(timestamp, dx, dy)
 
