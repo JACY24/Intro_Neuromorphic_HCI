@@ -9,6 +9,7 @@ class Program:
         self.experiment = exp.Experiment()
         self.exp_start_time = None
         self.exp_running = False
+        self.exp_between = False
 
         pygame.init()
 
@@ -53,7 +54,7 @@ class Program:
         ''' Main game loop '''
         pygame.mouse.set_visible(False)
 
-        while self.running and (self.experiment.trials is None or self.experiment.dist_to_target.size < self.experiment.trials):   
+        while self.running and (self.experiment.trials is None or self.experiment.dist_to_target.size < self.experiment.trials):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -67,6 +68,9 @@ class Program:
             pygame.mouse.set_pos((self.x , self.y))
             self.fps_clock.tick(self.fps)
 
+            if self.exp_between:
+                self.between_experiment()
+
         time.sleep(1)
         pygame.quit()
         self.experiment.save_results()
@@ -78,20 +82,18 @@ class Program:
         self.exp_start_time = time.time()
         self.x = 50
         self.y = self.screen.get_height() // 2
-        time.sleep(self.experiment.visibility_time)
         
         self.record_cursor_data = True
         self.cursor_visible = False
-        self.target_visible = False
-        self.pos_visible = False
 
     def end_experiment(self, pos: int):
         self.exp_running = False
+        self.exp_between = True
         self.record_cursor_data = False
         self.pos = pos
         end_time = time.time()
         
-        dist = pos[0] - self.target[0] - (self.experiment.width / 2) 
+        dist = pos[0] - self.target[0] - (self.experiment.width / 2)
         abs_dist = abs(dist)
         self.experiment.add_score(dist, end_time - self.exp_start_time)
         self.cursor_data.aggregate_data()
@@ -106,6 +108,13 @@ class Program:
         self.target_visible = True
         self.pos_visible = True
 
+    def between_experiment(self):
+        self.exp_between = False
+        time.sleep(self.experiment.visibility_time)
+        self.target_visible = False
+        self.pos_visible = False
+
+
     def draw_screen(self):
         self.screen.fill((255, 255, 255))
         pygame.draw.rect(self.screen, (128, 128, 128), (50 - 5, self.screen_height // 2 - 5, 10, 10))
@@ -119,7 +128,7 @@ class Program:
 
     def cb_fct(self, timestamp, dx, dy, button):
         rx,ry=self.tfct.applyd(dx, dy, timestamp)
-        rx *= self.dp_x_res 
+        rx *= self.dp_x_res
         ry *= self.dp_y_res
         self.x = max(min(self.x + rx, self.screen_width), 0)
         self.y = max(min(self.y + ry, self.screen_height), 0)

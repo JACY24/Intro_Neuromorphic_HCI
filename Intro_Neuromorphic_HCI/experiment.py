@@ -60,8 +60,8 @@ class Experiment:
         print(f"Time Max: {np.max(self.times):.2f}")
     
     def get_settings(self):
-        return {"amp": self.amp, 
-                "width": self.width, 
+        return {"amp": self.amp,
+                "width": self.width,
                 "visibility_time": self.visibility_time
                 }
 
