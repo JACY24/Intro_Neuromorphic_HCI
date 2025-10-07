@@ -1,6 +1,7 @@
 import pygame
 import experiment as exp
 import time
+import threading
 from libpointing import PointingDevice, DisplayDevice, TransferFunction
 from cursor_data import CursorData
 
@@ -59,7 +60,7 @@ class Program:
                 if event.type == pygame.QUIT:
                     self.running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1 and not self.exp_running:  # Left mouse button
+                    if event.button == 1 and not self.exp_running and not self.exp_between:  # Left mouse button
                         self.start_experiment()
                     elif event.button == 1 and self.exp_running:
                         self.end_experiment(event.pos)
@@ -67,9 +68,6 @@ class Program:
             pygame.display.update()
             pygame.mouse.set_pos((self.x , self.y))
             self.fps_clock.tick(self.fps)
-
-            if self.exp_between:
-                self.between_experiment()
 
         time.sleep(1)
         pygame.quit()
@@ -98,6 +96,7 @@ class Program:
         self.experiment.add_score(dist, end_time - self.exp_start_time)
         self.cursor_data.aggregate_data()
 
+        threading.Thread(target=self.between_experiment).start()
         
         max_distance = max(self.experiment.amp, self.screen.get_width() - (self.experiment.amp + self.experiment.width))
         
@@ -109,10 +108,10 @@ class Program:
         self.pos_visible = True
 
     def between_experiment(self):
-        self.exp_between = False
         time.sleep(self.experiment.visibility_time)
-        self.target_visible = False
+        self.target_visible = False # Geen idee of deze wel hier hoeft of niet, misschien is het beter om de target altijd te laten zien
         self.pos_visible = False
+        self.exp_between = False
 
 
     def draw_screen(self):
