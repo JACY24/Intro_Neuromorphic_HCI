@@ -23,13 +23,15 @@ class CursorData:
             tmp_data[i] = tmp_data[i][0] + dx, tmp_data[i][1] + dy
         self.aggregated_data.append(tmp_data)
         self.data = []
+    
+    def reset(self):
+        self.data = []
+        self.aggregated_data = []
 
-    def write_to_csv(self, settings, filename: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}_cursor.csv"):
-        path = os.path.join(os.path.dirname(os.getcwd()), 'results', filename)
+    def write_to_csv(self, settings, path: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}_cursor.csv"):
         print(f"Saving cursor data to {path}")
-        with open (path, mode='w', newline='') as file:
+        with open (path, mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Amplitude", "Width", "Visible time", "Run", "Time", "Dx", "Dy"])
             for i, data in enumerate(self.aggregated_data):
                 for time, (dx, dy) in enumerate(data):
                     writer.writerow([settings["amp"], settings["width"], settings["visibility_time"], i, time, dx, dy])

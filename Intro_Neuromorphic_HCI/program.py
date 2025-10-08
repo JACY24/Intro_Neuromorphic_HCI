@@ -2,6 +2,10 @@ import pygame
 import experiment as exp
 import time
 import threading
+import json
+import csv
+import datetime
+import os
 from libpointing import PointingDevice, DisplayDevice, TransferFunction
 from cursor_data import CursorData
 
@@ -11,6 +15,19 @@ class Program:
         self.exp_start_time = None
         self.exp_running = False
         self.exp_between = False
+        self.experiment_trials = []
+        self.runs_per_trial = 20
+
+        self.results_file_path = os.path.join(os.path.dirname(os.getcwd()), 'results', f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.csv")
+        self.cursor_file_path = os.path.join(os.path.dirname(os.getcwd()), 'results', f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}_cursor.csv")
+        self.experiments_file_name = os.path.join(os.path.dirname(os.getcwd()), 'Intro_Neuromorphic_HCI', "experiments.json")
+        with open(self.results_file_path, "w", newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Amplitude", "Width", "Visible time", "Distance", "Time"])
+        with open(self.cursor_file_path, "w", newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Amplitude", "Width", "Visible time", "Run", "Time", "Dx", "Dy"])
+        self.load_json_experiments()
 
         pygame.init()
 
@@ -25,9 +42,6 @@ class Program:
         pygame.display.set_icon(self.icon)
         pygame.display.set_caption(title)
 
-        self.target = (self.experiment.amp, 20, self.experiment.width, self.screen.get_height() - 40)
-        pygame.draw.rect(self.screen, (230, 34, 114), self.target)
-
         # Cursor
         self.pdev = PointingDevice.create("any:?vendor=0x046D&product=0xC537")
         self.ddev = DisplayDevice.create("any:")
@@ -37,7 +51,6 @@ class Program:
         self.cursor_data = CursorData(100) # ms per aggregated time interval
         self.pdev.setCallback(self.cb_fct)
         self.record_cursor_data = False
-        self.corsor_visible = True
         self.x = 50
         self.y = self.screen.get_height() // 2
 
@@ -54,26 +67,31 @@ class Program:
     def game_loop(self):
         ''' Main game loop '''
         pygame.mouse.set_visible(False)
-
-        while self.running and (self.experiment.trials is None or self.experiment.dist_to_target.size < self.experiment.trials):
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1 and not self.exp_running and not self.exp_between:  # Left mouse button
-                        self.start_experiment()
-                    elif event.button == 1 and self.exp_running:
-                        self.end_experiment(event.pos)
-            self.draw_screen()
-            pygame.display.update()
-            pygame.mouse.set_pos((self.x , self.y))
-            self.fps_clock.tick(self.fps)
-
-        time.sleep(1)
+        for (amp, width, time_visible) in self.experiment_trials:
+            threading.Thread(target=self.between_trials).start()
+            self.experiment.set_settings(amp, width, self.runs_per_trial, time_visible)
+            self.target = (self.experiment.amp, 20, self.experiment.width, self.screen.get_height() - 40)
+            self.experiment.reset_experiment()
+            self.running = True
+            while self.running and (self.experiment.trials is None or self.experiment.dist_to_target.size < self.experiment.trials):
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.running = False
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1 and not self.exp_running and not self.exp_between:  # Left mouse button
+                            self.start_experiment()
+                        elif event.button == 1 and self.exp_running:
+                            self.end_experiment(event.pos)
+                            if self.experiment.dist_to_target.size < self.experiment.trials:
+                                threading.Thread(target=self.between_experiment).start()
+                self.draw_screen()
+                pygame.display.update()
+                pygame.mouse.set_pos((self.x , self.y))
+                self.fps_clock.tick(self.fps)
+            self.experiment.save_results(filename = self.results_file_path)
+            self.experiment.print_results()
+            self.cursor_data.write_to_csv(self.experiment.get_settings(), path = self.cursor_file_path)
         pygame.quit()
-        self.experiment.save_results()
-        self.experiment.print_results()
-        self.cursor_data.write_to_csv(self.experiment.get_settings())
 
     def start_experiment(self):
         self.exp_running = True
@@ -95,8 +113,6 @@ class Program:
         abs_dist = abs(dist)
         self.experiment.add_score(dist, end_time - self.exp_start_time)
         self.cursor_data.aggregate_data()
-
-        threading.Thread(target=self.between_experiment).start()
         
         max_distance = max(self.experiment.amp, self.screen.get_width() - (self.experiment.amp + self.experiment.width))
         
@@ -111,6 +127,13 @@ class Program:
         time.sleep(self.experiment.visibility_time)
         self.target_visible = False # Geen idee of deze wel hier hoeft of niet, misschien is het beter om de target altijd te laten zien
         self.pos_visible = False
+        self.exp_between = False
+
+    def between_trials(self):
+        self.target_visible = True
+        self.pos_visible = False
+        time.sleep(2)
+        self.target_visible = False
         self.exp_between = False
 
 
@@ -136,6 +159,16 @@ class Program:
 
     def draw_cursor(self):
         pygame.draw.circle(self.screen, (255, 0, 0), (self.x, self.y), 5, 5)
+
+    def load_json_experiments(self):
+        with open(self.experiments_file_name, "r") as f:
+            experiments = json.load(f)
+            self.runs_per_trial = experiments["runs_per_trial"]
+            for trial in experiments["experiments"]:
+                self.add_experiment(trial)
+
+    def add_experiment(self, trial):
+            self.experiment_trials.append((trial["amp"], trial["width"], trial["visible_time"]))
 
     def run(self):
         self.game_loop()

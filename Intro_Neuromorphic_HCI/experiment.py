@@ -11,7 +11,9 @@ class Experiment:
         self.visibility_time = None
         self.dist_to_target = np.array([])
         self.times = np.array([])
+        # self.get_settings_from_cl()
 
+    def get_settings_from_cl(self):
         while type(self.amp) is not int or type(self.width) is not int or type(self.trials) is not int and self.visibility_time is not float:
             try:
                 amp, width, trials, vis_time = input("Enter distance, width, amount of trials and visibility time (e.g., '200 50 20 1.5'): ").split()
@@ -21,17 +23,21 @@ class Experiment:
                 self.visibility_time = float(vis_time)
             except ValueError:
                 print("Please enter valid integers for distance, width and trials and a float for visibility time.")
-    
+
+    def set_settings(self, amp, width, trials, visibility_time):
+        self.amp = amp
+        self.width = width
+        self.trials = trials
+        self.visibility_time = visibility_time
+
     def add_score(self, score: float, time: float):
         self.times = np.append(self.times, time)
         self.dist_to_target = np.append(self.dist_to_target, score)
 
     def save_results(self, filename: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.csv"):
-        results = os.path.join(os.path.dirname(os.getcwd()), 'results', filename)
-        print(f"Saving results to {results}")
-        with open (results, mode='w', newline='') as file:
+        print(f"Saving results to {filename}")
+        with open (filename, mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Amplitude", "Width", "Visible time", "Distance", "Time"])
             for score, time in zip(self.dist_to_target, self.times):
                 writer.writerow([self.amp, self.width, self.visibility_time, score, time])
         
@@ -64,6 +70,10 @@ class Experiment:
                 "width": self.width,
                 "visibility_time": self.visibility_time
                 }
+    
+    def reset_experiment(self):
+        self.dist_to_target = np.array([])
+        self.times = np.array([])
 
     def run(self):
         print("Experiment is running")
