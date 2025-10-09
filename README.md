@@ -20,7 +20,17 @@ As data we collect the distance between where the user ends and the actual targe
 1. First make sure to install poetry following [the guide on their website](https://python-poetry.org/docs/). Also install the Also install the [poetry shell plugin](https://github.com/python-poetry/poetry-plugin-shell).
 2. Next, run `poetry install` in your terminal, this will install all the required packages you need to run the code
 3. To activate the virtual environment in which the packages are now installed, run `poetry shell`
-4. In your terminal, navigate to the `Intro_Neuromorphic_HCI` directory, and run `python3 main.py`
+4. Next up, we need to install the libpointing library:
+    - run `git clone https://github.com/INRIA/libpointing.git`
+    - We then need to fix the libpointing bindings by running: 
+        - `cp __init__.py libpointing/bindings/Python/cython/libpointing/__init__.py`
+        - `cp build_homebrew.py libpointing/bindings/Python/cython/build_homebrew.py`
+    - And we need to build the libpointing bindings:
+        - `cd libpointing/bindings/Python/cython`
+        - `python build_homebrew.py build_ext --inplace`
+        - `cd ../../../..`
+
+4. Now, in your terminal, navigate to the `Intro_Neuromorphic_HCI` directory, and run `python3 main.py`
 
 ### Program manual
 Once the code is running, it will prompt to input some initial values:
