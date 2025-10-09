@@ -11,7 +11,9 @@ class Experiment:
         self.visibility_time = None
         self.dist_to_target = np.array([])
         self.times = np.array([])
+        # self.get_settings_from_cl()
 
+    def get_settings_from_cl(self):
         while type(self.amp) is not int or type(self.width) is not int or type(self.trials) is not int and self.visibility_time is not float:
             try:
                 amp, width, trials, vis_time = input("Enter distance, width, amount of trials and visibility time (e.g., '200 50 20 1.5'): ").split()
@@ -21,7 +23,13 @@ class Experiment:
                 self.visibility_time = float(vis_time)
             except ValueError:
                 print("Please enter valid integers for distance, width and trials and a float for visibility time.")
-    
+
+    def set_settings(self, amp, width, trials, visibility_time):
+        self.amp = amp
+        self.width = width
+        self.trials = trials
+        self.visibility_time = visibility_time
+
     def add_score(self, score: float, time: float):
         """ Add a score and time to the results """
         self.times = np.append(self.times, time)
@@ -65,6 +73,16 @@ class Experiment:
         print(f"Time Standard Deviation: {np.std(self.times):.2f}")
         print(f"Time Min: {np.min(self.times):.2f}")
         print(f"Time Max: {np.max(self.times):.2f}")
+    
+    def get_settings(self):
+        return {"amp": self.amp,
+                "width": self.width,
+                "visibility_time": self.visibility_time
+                }
+    
+    def reset_experiment(self):
+        self.dist_to_target = np.array([])
+        self.times = np.array([])
 
     def run(self):
         print("Experiment is running")
