@@ -23,20 +23,27 @@ class Experiment:
                 print("Please enter valid integers for distance, width and trials and a float for visibility time.")
     
     def add_score(self, score: float, time: float):
+        """ Add a score and time to the results """
         self.times = np.append(self.times, time)
         self.dist_to_target = np.append(self.dist_to_target, score)
 
     def save_results(self, filename: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}.csv"):
+        """ Save results to a CSV file """
         results = os.path.join(os.path.dirname(os.getcwd()), 'results', filename)
         print(f"Saving results to {results}")
+
+        
+        directions = [True if i < (self.dist_to_target.size / 2) else False for i in range(self.dist_to_target.size)]
+
         with open (results, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Amplitude", "Width", "Visible time", "Distance", "Time"])
-            for score, time in zip(self.dist_to_target, self.times):
-                writer.writerow([self.amp, self.width, self.visibility_time, score, time])
+            writer.writerow(["Amplitude", "Width", "Visible time", "Distance", "Time", "From_left"])
+            for score, time, direction in zip(self.dist_to_target, self.times, directions):
+                writer.writerow([self.amp, self.width, self.visibility_time, score, time, direction])
         
 
     def print_results(self):
+        """ Print results to console """
         if self.dist_to_target.size == 0:
             print("No scores to display.")
             return
