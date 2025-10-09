@@ -6,8 +6,9 @@ import json
 import csv
 import datetime
 import os
-from libpointing import PointingDevice, DisplayDevice, TransferFunction
+from libpointing.libpointing import PointingDevice, DisplayDevice, TransferFunction
 from cursor_data import CursorData
+
 
 class Program:
     def __init__(self, width=1200, height=800, fps=60, title="Blinded Fitts' Law Experiment", icon_path='../img/target.png'):
@@ -43,7 +44,7 @@ class Program:
         pygame.display.set_caption(title)
 
         # Cursor
-        self.pdev = PointingDevice.create("any:?vendor=0x046D&product=0xC537")
+        self.pdev = PointingDevice.create("any:?vendor=0x046D&product=0xc53f")
         self.ddev = DisplayDevice.create("any:")
         self.tfct = TransferFunction(b"constant:?cdgain=4", self.pdev, self.ddev)
         self.dp_x_res = self.ddev.getResolution()[0]/self.pdev.getResolution()
