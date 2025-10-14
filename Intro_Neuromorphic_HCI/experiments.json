@@ -1,20 +1,66 @@
 {
-    "runs_per_trial": 10,
+    "runs_per_trial": 100,
+    "random": 1,
     "experiments": [
         {
-            "amp": 200,
-            "width": 50,
+            "amp": 160,
+            "width": 40,
             "visible_time": 0.5
         },
         {
-            "amp": 500,
-            "width": 100,
+            "amp": 160,
+            "width": 80,
             "visible_time": 0.5
         },
         {
-            "amp": 400,
-            "width": 100,
-            "visible_time": 0.75
+            "amp": 160,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 320,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 320,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 320,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 640,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 640,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 640,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 1280,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 1280,
+            "width": 160,
+            "visible_time": 0.5
+        },
+        {
+            "amp": 1280,
+            "width": 160,
+            "visible_time": 0.5
         }
     ]
 }

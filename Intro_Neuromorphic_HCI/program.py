@@ -5,6 +5,7 @@ import threading
 import json
 import csv
 import datetime
+import random
 import os
 from libpointing.libpointing import PointingDevice, DisplayDevice, TransferFunction
 from cursor_data import CursorData
@@ -12,7 +13,7 @@ from cursor_data import CursorData
 #WORKING VERSION
 
 class Program:
-    def __init__(self, width=1200, height=800, fps=60, title="Blinded Fitts' Law Experiment", icon_path='../img/target.png'):
+    def __init__(self, width=1600, height=800, fps=60, title="Blinded Fitts' Law Experiment", icon_path='../img/target.png'):
         # initialize experiment
         self.experiment = exp.Experiment()
         self.exp_start_time = None
@@ -205,6 +206,8 @@ class Program:
             self.runs_per_trial = experiments["runs_per_trial"]
             for trial in experiments["experiments"]:
                 self.add_experiment(trial)
+            if experiments["random"] == 1:
+                random.shuffle(self.experiment_trials)
 
     def add_experiment(self, trial):
         """ Add a left and right trial to the upcomming experiments """
