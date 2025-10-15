@@ -106,6 +106,7 @@ class Program:
             self.experiment.save_results(filename = self.results_file_path)
             self.experiment.print_results()
             self.cursor_data.write_to_csv(self.experiment.get_settings(), path = self.cursor_file_path)
+            self.cursor_data.reset()
         pygame.quit()
 
     def start_experiment(self):
