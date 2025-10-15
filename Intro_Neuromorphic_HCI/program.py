@@ -56,7 +56,7 @@ class Program:
         self.tfct = TransferFunction(b"constant:?cdgain=4", self.pdev, self.ddev)
         self.dp_x_res = self.ddev.getResolution()[0]/self.pdev.getResolution()
         self.dp_y_res = self.ddev.getResolution()[1]/self.pdev.getResolution()
-        self.cursor_data = CursorData(100) # ms per aggregated time interval
+        self.cursor_data = CursorData(50) # ms per aggregated time interval
         self.pdev.setCallback(self.cb_fct)
         self.record_cursor_data = False
         self.x = 50
