@@ -19,12 +19,12 @@
         },
         {
             "amp": 320,
-            "width": 160,
+            "width": 40,
             "visible_time": 0.5
         },
         {
             "amp": 320,
-            "width": 160,
+            "width": 80,
             "visible_time": 0.5
         },
         {
@@ -34,12 +34,12 @@
         },
         {
             "amp": 640,
-            "width": 160,
+            "width": 40,
             "visible_time": 0.5
         },
         {
             "amp": 640,
-            "width": 160,
+            "width": 80,
             "visible_time": 0.5
         },
         {
@@ -49,12 +49,12 @@
         },
         {
             "amp": 1280,
-            "width": 160,
+            "width": 40,
             "visible_time": 0.5
         },
         {
             "amp": 1280,
-            "width": 160,
+            "width": 80,
             "visible_time": 0.5
         },
         {
