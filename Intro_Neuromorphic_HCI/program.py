@@ -21,6 +21,7 @@ class Program:
         self.exp_between = False
         self.experiment_trials = []
         self.runs_per_trial = 20
+        self.correct_attempts_required = self.runs_per_trial
 
         # prepare result files
         self.results_file_path = os.path.join(os.path.dirname(os.getcwd()), 'results', f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.csv")
@@ -75,16 +76,17 @@ class Program:
     def game_loop(self):
         ''' Main game loop '''
         pygame.mouse.set_visible(False)
-         # Game loop for each trial variant
+        # Game loop for each trial variant
         for (amp, width, time_visible, from_left_to_right) in self.experiment_trials:
             threading.Thread(target=self.between_trials).start()
             self.experiment.set_settings(amp, width, self.runs_per_trial, time_visible, from_left_to_right)
             self.target = (self.experiment.amp, 20, self.experiment.width, self.screen.get_height() - 40)
             self.experiment.reset_experiment()
             self.running = True
+            self.correct_attempts_required = self.runs_per_trial
 
             # Game loop while the trial is running
-            while self.running and (self.experiment.trials is None or self.experiment.dist_to_target.size < self.experiment.trials):
+            while self.running and (self.experiment.trials is None or self.correct_attempts_required > 0):
                 # Handle events
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -97,7 +99,7 @@ class Program:
                                 self.start_experiment()
                         elif event.button == 1 and self.exp_running:
                             self.end_experiment(event.pos)
-                            if self.experiment.dist_to_target.size < self.experiment.trials:
+                            if self.correct_attempts_required > 0:
                                 threading.Thread(target=self.between_experiment).start()
                 self.draw_screen()
                 pygame.display.update()
@@ -132,6 +134,10 @@ class Program:
         
         dist = pos[0] - self.target[0] - (self.experiment.width / 2)
         abs_dist = abs(dist)
+
+        if abs_dist < self.experiment.width / 2:
+            self.correct_attempts_required -= 1
+            
         self.experiment.add_score(dist, end_time - self.exp_start_time)
         self.cursor_data.aggregate_data()
         
@@ -164,10 +170,12 @@ class Program:
         self.screen.fill((255, 255, 255))
         self.draw_start()
         if self.target_visible:
+        # if True:
             self.draw_target()
         if self.pos_visible:
             pygame.draw.circle(self.screen, self.color, self.pos, 10)
         if self.cursor_visible:
+        # if True:
             self.draw_cursor()
 
     def cb_fct(self, timestamp, dx, dy, button):

@@ -1,5 +1,5 @@
 {
-    "runs_per_trial": 100,
+    "runs_per_trial": 15,
     "random": 1,
     "experiments": [
         {
