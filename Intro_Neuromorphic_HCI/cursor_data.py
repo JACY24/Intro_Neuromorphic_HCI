@@ -34,4 +34,4 @@ class CursorData:
             writer = csv.writer(file)
             for i, data in enumerate(self.aggregated_data):
                 for time, (dx, dy) in enumerate(data):
-                    writer.writerow([settings["amp"], settings["width"], settings["visibility_time"], i, time, dx, dy])
+                    writer.writerow([settings["amp"], settings["width"], settings["visibility_time"], settings["from_left_to_right"], i, time, dx, dy])

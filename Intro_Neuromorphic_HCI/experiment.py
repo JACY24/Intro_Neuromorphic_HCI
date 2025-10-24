@@ -9,11 +9,13 @@ class Experiment:
         self.width = None
         self.trials = None
         self.visibility_time = None
+        self.from_left_to_right = True
         self.dist_to_target = np.array([])
         self.times = np.array([])
         # self.get_settings_from_cl()
 
     def get_settings_from_cl(self):
+        """ Take settings from the commandline """
         while type(self.amp) is not int or type(self.width) is not int or type(self.trials) is not int and self.visibility_time is not float:
             try:
                 amp, width, trials, vis_time = input("Enter distance, width, amount of trials and visibility time (e.g., '200 50 20 1.5'): ").split()
@@ -24,32 +26,27 @@ class Experiment:
             except ValueError:
                 print("Please enter valid integers for distance, width and trials and a float for visibility time.")
 
-    def set_settings(self, amp, width, trials, visibility_time):
+    def set_settings(self, amp, width, trials, visibility_time, from_left_to_right):
+        """ Set experiment parameters """
         self.amp = amp
         self.width = width
         self.trials = trials
         self.visibility_time = visibility_time
+        self.from_left_to_right = from_left_to_right
 
     def add_score(self, score: float, time: float):
         """ Add a score and time to the results """
         self.times = np.append(self.times, time)
         self.dist_to_target = np.append(self.dist_to_target, score)
 
-    def save_results(self, filename: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}.csv"):
+    def save_results(self, filename: str = f"results_{datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.csv"):
         """ Save results to a CSV file """
-        results = os.path.join(os.path.dirname(os.getcwd()), 'results', filename)
-        print(f"Saving results to {results}")
-
-        
-        directions = [True if i < (self.dist_to_target.size / 2) else False for i in range(self.dist_to_target.size)]
-
-        with open (results, mode='w', newline='') as file:
+        print(f"Saving results to {filename}")
+        with open (filename, mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Amplitude", "Width", "Visible time", "Distance", "Time", "From_left"])
-            for score, time, direction in zip(self.dist_to_target, self.times, directions):
-                writer.writerow([self.amp, self.width, self.visibility_time, score, time, direction])
+            for score, time in zip(self.dist_to_target, self.times):
+                writer.writerow([self.amp, self.width, self.visibility_time, self.from_left_to_right, score, time])
         
-
     def print_results(self):
         """ Print results to console """
         if self.dist_to_target.size == 0:
@@ -77,7 +74,8 @@ class Experiment:
     def get_settings(self):
         return {"amp": self.amp,
                 "width": self.width,
-                "visibility_time": self.visibility_time
+                "visibility_time": self.visibility_time,
+                "from_left_to_right": self.from_left_to_right
                 }
     
     def reset_experiment(self):
